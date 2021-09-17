@@ -142,12 +142,13 @@ dishRouter.route('/:dishId/comments')
     Dishes.findById(req.params.dishId)
     .then((dish) => {
         if (dish != null) {
-            dish.comments.push(req.body);
+            dish.comments.unshift(req.body);
             dish.save()
             .then((dish) => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.json(dish);                
+                res.json(dish);   
+                         
             }, (err) => next(err));
         }
         else {
