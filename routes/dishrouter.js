@@ -1,5 +1,9 @@
 const express = require('express');
 const bodyparser = require('body-parser');
+const mongoose = require('mongoose');
+
+
+const Dishes = require ('../models/dishes');
 
 
 const dishRouter = express.Router();
@@ -9,18 +13,16 @@ dishRouter.use(bodyparser.json());
 
 dishRouter.route('/')
 
-
-.all( (req,res,next)=>{
-    res.statusCode = 200;
-    res.setHeader('Content-Type','text/plain');
-    next();
-
-})
-
-
 .get((req,res,next)=>{
 
-        res.end('Will Send all the dishes to you');
+    Dishes.find({})
+    .then((dishes) =>{
+
+        res.status = 200;
+        res.setHeader('Content-Type','application/json');
+        res.json(dishes);
+    }, (err)=> next(err))
+    .catch((err)=>next(err));
 
 })
 
@@ -28,8 +30,15 @@ dishRouter.route('/')
 
 .post((req,res,next)=>{
 
-    res.end('Will add the dish: ' + req.body.name + 'With details: '
-    + req.body.description);
+    Dishes.create(req.body)
+    .then((dish) =>{
+
+        res.status = 200;
+        res.setHeader('Content-Type','application/json');
+        res.json(dish);
+    }, (err)=> next(err))
+    .catch((err)=>next(err));
+
 })
 
 
@@ -44,7 +53,16 @@ dishRouter.route('/')
 
 .delete((req,res,next)=>{
 
-    res.end('Deleting all the dishes:');
+    Dishes.remove({})
+    .then((resp)=>{
+
+        res.status = 200;
+        res.setHeader('Content-Type','application/json');
+        res.json(resp);
+
+    },(err)=> next(err))
+    .catch((err)=>next(err));
+
 });
 
 
@@ -52,25 +70,21 @@ dishRouter.route('/')
 
 dishRouter.route('/:dishesId')
 
-.all((req,res,next) =>{
-
-        res.statusCode = 200;
-        res.setHeader('Content-Type','text/plain');
-        next();
-})
-
-
 .get((req,res,next)=>{
 
+    Dishes.findById(req.params.dishesId)
+    .then((dish)=>{  
+        res.statusCode= 200;
+        res.json(dish);
+    },(err)=> next(err))
+    .catch((err)=>next(err));
 
-    res.end("Will send the details of the dish : " + req.params.dishesId + 'to you!');
+    
 })
 
 
 
 .post((req,res,next)=>{
-
-
     res.statusCode =403;
     res.end('Post Operation not supported on dishes' + req.params.dishesId);
 })
@@ -78,14 +92,29 @@ dishRouter.route('/:dishesId')
 
 .put((req,res,next)=>{
 
-res.write('Updating the dish: ' + req.params.dishesId + '\n');
-res.end('Will Update the dish: ' + req.body.name + 'with details:' + req.body.description );
+        Dishes.findByIdAndUpdate(req.params.dishesId, {
+            $set: req.body
+        }, {new: true})
+        .then((dish)=>{  
+            res.statusCode= 200;
+            res.json(dish);
+        },(err)=> next(err))
+        .catch((err)=>next(err));
+
 
 })
 
 .delete((req,res,next)=>{
 
-    res.end('Deleting dish:' + req.params.dishesId);
+    Dishes.findByIdAndRemove(req.params.dishesId)
+    .then((resp)=>{
+
+        res.status = 200;
+        res.setHeader('Content-Type','application/json');
+        res.json(resp);
+
+    },(err)=> next(err))
+    .catch((err)=>next(err));
 
 });
 
