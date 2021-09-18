@@ -92,7 +92,7 @@ const dishSchema = new Schema({
     });
 
 
-    var Dishes = mongoose.model('Dish', dishSchema);
+    var Dishes = mongoose.model('dishes', dishSchema);
 
 
     module.exports = Dishes;
