@@ -141,7 +141,7 @@ dishRouter.route('/:dishId/comments')
     .then((dish) => {
         if (dish != null) {
             req.body.author = req.user._id;
-            dish.comments.push(req.body);
+            dish.comments.unshift(req.body);
             dish.save()
             .then((dish) => {
                 Dishes.findById(dish._id)
