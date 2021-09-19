@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyparser = require('body-parser');
 const mongoose = require('mongoose');
+const authenticate = require('../authenticate');
 
 
 
@@ -31,7 +32,7 @@ promoRouter.route('/')
 
 
 
-.post((req,res,next)=>{
+.post(authenticate.verifyUser,(req,res,next)=>{
 
     Promotions.create(req.body)
         .then((promotion)=>{
@@ -47,7 +48,7 @@ promoRouter.route('/')
 
 
 
-.put((req,res,next)=>{
+.put(authenticate.verifyUser,(req,res,next)=>{
 
     res.statusCode = 403;
     res.end('PUT Operation not supported on promotions');
@@ -55,7 +56,7 @@ promoRouter.route('/')
 
 
 
-.delete((req,res,next)=>{
+.delete(authenticate.verifyUser,(req,res,next)=>{
 
     Promotions.remove({})
     .then((resp)=>{
@@ -86,7 +87,7 @@ promoRouter.route('/:promoId')
 
 
 
-.post((req,res,next)=>{
+.post(authenticate.verifyUser,(req,res,next)=>{
 
 
 res.statusCode =403;
@@ -94,7 +95,7 @@ res.end('Post Operation not supported on promotion' + req.params.promoId);
 })
 
 
-.put((req,res,next)=>{
+.put(authenticate.verifyUser,(req,res,next)=>{
     Promotions.findByIdAndUpdate(req.params.promoId,{
         $set: req.body
     }, {new: true})
@@ -105,7 +106,7 @@ res.end('Post Operation not supported on promotion' + req.params.promoId);
     .catch((err)=>next(err));
 })
 
-.delete((req,res,next)=>{
+.delete(authenticate.verifyUser,(req,res,next)=>{
 
     Promotions.findByIdAndRemove(req.params.promoId)
     .then((resp)=>{
