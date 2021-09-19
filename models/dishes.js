@@ -5,7 +5,7 @@ const Currency = mongoose.Types.Currency;
 
 
 
-const commentSchema = new Schema({
+var commentSchema = new Schema({
     rating:  {
         type: Number,
         min: 1,
@@ -18,15 +18,10 @@ const commentSchema = new Schema({
     },
     author: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'users'
     }
-    
-},{
-
- timestamps: true
-    
-
-
+}, {
+    timestamps: true
 });
 
 
