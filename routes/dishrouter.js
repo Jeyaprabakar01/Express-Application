@@ -26,7 +26,7 @@ dishRouter.route('/')
 
 
 
-.post(authenticate.verifyUser,(req,res,next)=>{
+.post(authenticate.verifyUser,authenticate.verifyAdmin, (req,res,next)=>{
 
     Dishes.create(req.body)
     
@@ -42,7 +42,7 @@ dishRouter.route('/')
 
 
 
-.put(authenticate.verifyUser,(req,res,next)=>{
+.put(authenticate.verifyUser,authenticate.verifyAdmin, (req,res,next)=>{
 
     res.statusCode = 403;
     res.end('PUT Operation not supported on dishes');
@@ -50,7 +50,7 @@ dishRouter.route('/')
 
 
 
-.delete(authenticate.verifyUser,(req,res,next)=>{
+.delete(authenticate.verifyUser,authenticate.verifyAdmin, (req,res,next)=>{
 
     Dishes.remove({})
     .then((resp)=>{
@@ -81,13 +81,13 @@ dishRouter.route('/:dishId')
 
 
 
-.post(authenticate.verifyUser,(req,res,next)=>{
+.post(authenticate.verifyUser,authenticate.verifyAdmin, (req,res,next)=>{
     res.statusCode =403;
     res.end('Post Operation not supported on dishes' + req.params.dishesId);
 })
 
 
-.put(authenticate.verifyUser,(req,res,next)=>{
+.put(authenticate.verifyUser,authenticate.verifyAdmin, (req,res,next)=>{
 
         Dishes.findByIdAndUpdate(req.params.dishesId, {
             $set: req.body
@@ -101,7 +101,7 @@ dishRouter.route('/:dishId')
 
 })
 
-.delete(authenticate.verifyUser,(req,res,next)=>{
+.delete(authenticate.verifyUser,authenticate.verifyAdmin, (req,res,next)=>{
 
     Dishes.findByIdAndRemove(req.params.dishesId)
     .then((resp)=>{
@@ -136,7 +136,7 @@ dishRouter.route('/:dishId/comments')
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.post(authenticate.verifyUser, (req, res, next) => {
+.post(authenticate.verifyUser,(req, res, next) => {
     Dishes.findById(req.params.dishId)
     .then((dish) => {
         if (dish != null) {
@@ -161,12 +161,12 @@ dishRouter.route('/:dishId/comments')
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.put(authenticate.verifyUser,(req, res, next) => {
+.put(authenticate.verifyUser, (req, res, next) => {
     res.statusCode = 403;
     res.end('PUT operation not supported on /dishes/'
         + req.params.dishId + '/comments');
 })
-.delete(authenticate.verifyUser,(req, res, next) => {
+.delete(authenticate.verifyUser,authenticate.verifyAdmin,(req, res, next) => {
     Dishes.findById(req.params.dishId)
     .then((dish) => {
         if (dish != null) {
